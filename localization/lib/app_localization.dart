@@ -5,6 +5,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
+import 'package:localization/locale_provider.dart';
 
 // helpfull topic by Reso; https://resocoder.com/2019/06/01/flutter-localization-the-easy-way-internationalization-with-json/
 class AppLocalizations {
@@ -105,7 +106,7 @@ class _AppLocalizationsDelegate
   @override
   bool isSupported(Locale locale) {
     // Include all of your supported language codes here
-    return ['en', 'fr'].contains(locale.languageCode);
+    return supportedLocale.contains(locale.languageCode);
   }
 
   @override
