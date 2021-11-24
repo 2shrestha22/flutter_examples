@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -36,12 +37,13 @@ class AppLocalizations {
     try {
       //try loading from remote
       final response = await http.get(Uri.parse(
-          'https://your-json-file-link/{languageCode}.json'
+          'https://raw.githubusercontent.com/2shrestha22/flutter_examples/main/files/{languageCode}.json'
               .replaceFirst('{languageCode}', locale.languageCode)));
       jsonString = response.body;
     } catch (e) {
       //if failed use from asset
       jsonString = defaultJsonString;
+      log('failed to load from network\nloading from asset');
     }
 
     _localizedStrings =
