@@ -71,15 +71,43 @@ class _ReactiveFormsExampleState extends State<ReactiveFormsExample> {
           formGroup: familyMemberForm,
           child: Column(
             children: <Widget>[
-              ReactiveTextField(
-                formControlName: 'familyMember[0].personal.name',
-                decoration: const InputDecoration(labelText: 'Name'),
+              ReactiveFormArray(
+                formArrayName: 'familyMember',
+                builder: (context, formArray, child) {
+                  return Column(
+                    children: [
+                      for (final control in formArray.controls)
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 10.0),
+                          child: ReactiveTextField<String>(
+                            key: ObjectKey(control),
+                            formControl: control as FormControl<String>,
+                            keyboardType: TextInputType.number,
+                            decoration: InputDecoration(
+                              labelText: 'Phone number',
+                              suffixIcon: IconButton(
+                                icon: const Icon(
+                                  Icons.remove_circle,
+                                  color: Colors.red,
+                                ),
+                                onPressed: () => formArray.remove(control),
+                              ),
+                            ),
+                          ),
+                        ),
+                    ],
+                  );
+                },
               ),
-              sb,
-              ReactiveTextField(
-                formControlName: 'familyMember.personal.email',
-                decoration: const InputDecoration(labelText: 'Email'),
-              ),
+              // ReactiveTextField(
+              //   formControlName: 'personal.name',
+              //   decoration: const InputDecoration(labelText: 'Name'),
+              // ),
+              // sb,
+              // ReactiveTextField(
+              //   formControlName: 'familyMember.personal.email',
+              //   decoration: const InputDecoration(labelText: 'Email'),
+              // ),
               ElevatedButton(
                 onPressed: () {
                   setState(() {});
