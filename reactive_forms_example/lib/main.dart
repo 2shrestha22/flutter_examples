@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:pretty_json/pretty_json.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
 final familyMemberForm = fb.group({
@@ -109,6 +110,7 @@ class _ReactiveFormsExampleState extends State<ReactiveFormsExample> {
               ElevatedButton(
                 onPressed: () {
                   setState(() {});
+                  print(prettyJson(familyFormArray.value, indent: 2));
                 },
                 child: const Text('Save'),
               ),
