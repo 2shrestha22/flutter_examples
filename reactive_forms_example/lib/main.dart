@@ -1,31 +1,34 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
-final form = FormGroup({
-  'personal': FormGroup({
-    'name': FormControl<String>(validators: [Validators.required]),
-    'email': FormControl<String>(
-      validators: [Validators.required, Validators.email],
-    ),
+final familyMemberForm = fb.group({
+  'personal': fb.group({
+    'name': ['', Validators.required],
+    'email': ['', Validators.required],
   }),
-  'phone': FormGroup({
-    'phoneNumber': FormControl<String>(
-      validators: [Validators.required, Validators.number],
-    ),
-    'countryIso': FormControl<String>(validators: [Validators.required]),
+  'phone': fb.group({
+    'phoneNumber': ['', Validators.required],
+    'countryIso': ['', Validators.required],
   }),
-  'address': FormGroup({
-    'street': FormControl<String>(validators: [Validators.required]),
-    'city': FormControl<String>(validators: [Validators.required]),
-    'zip': FormControl<String>(validators: [Validators.required]),
+  'address': fb.group({
+    'street': ['', Validators.required],
+    'city': ['', Validators.required],
+    'zip': ['', Validators.required],
   }),
 });
 
-final familyMemberForm = FormGroup({
-  'familyMember': FormArray([form])
+final familyMembersFormGroup = fb.group({
+  'familyMembers': familyFormArray,
 });
+
+final familyFormArray = fb.array([
+  familyMemberForm,
+  familyMemberForm,
+  familyMemberForm,
+]);
 
 const sb = SizedBox(height: 20);
 
@@ -68,20 +71,23 @@ class _ReactiveFormsExampleState extends State<ReactiveFormsExample> {
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: ReactiveForm(
-          formGroup: familyMemberForm,
+          formGroup: familyMembersFormGroup,
           child: Column(
             children: <Widget>[
               ReactiveFormArray(
-                formArrayName: 'familyMember',
+                formArrayName: 'familyMembers',
                 builder: (context, formArray, child) {
+                  log(formArray.controls.length.toString());
                   return Column(
-                    children: [
-                      for (final control in formArray.controls)
+                      children: formArray.controls.map((e) {
+                    return Column(
+                      children: [
                         Padding(
                           padding: const EdgeInsets.only(bottom: 10.0),
-                          child: ReactiveTextField<String>(
-                            key: ObjectKey(control),
-                            formControl: control as FormControl<String>,
+                          child: ReactiveTextField(
+                            key: ObjectKey(e),
+                            formControl: (e as FormGroup)
+                                .control('personal.name') as FormControl,
                             keyboardType: TextInputType.number,
                             decoration: InputDecoration(
                               labelText: 'Phone number',
@@ -90,31 +96,23 @@ class _ReactiveFormsExampleState extends State<ReactiveFormsExample> {
                                   Icons.remove_circle,
                                   color: Colors.red,
                                 ),
-                                onPressed: () => formArray.remove(control),
+                                onPressed: () => formArray.remove(e),
                               ),
                             ),
                           ),
                         ),
-                    ],
-                  );
+                      ],
+                    );
+                  }).toList());
                 },
               ),
-              // ReactiveTextField(
-              //   formControlName: 'personal.name',
-              //   decoration: const InputDecoration(labelText: 'Name'),
-              // ),
-              // sb,
-              // ReactiveTextField(
-              //   formControlName: 'familyMember.personal.email',
-              //   decoration: const InputDecoration(labelText: 'Email'),
-              // ),
               ElevatedButton(
                 onPressed: () {
                   setState(() {});
                 },
                 child: const Text('Save'),
               ),
-              Text(jsonEncode(form.value)),
+              Text(jsonEncode(familyFormArray.value)),
             ],
           ),
         ),
