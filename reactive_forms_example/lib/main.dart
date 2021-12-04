@@ -5,30 +5,32 @@ import 'package:flutter/material.dart';
 import 'package:pretty_json/pretty_json.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
-final familyMemberForm = fb.group({
-  'personal': fb.group({
-    'name': ['', Validators.required],
-    'email': ['', Validators.required],
-  }),
-  'phone': fb.group({
-    'phoneNumber': ['', Validators.required],
-    'countryIso': ['', Validators.required],
-  }),
-  'address': fb.group({
-    'street': ['', Validators.required],
-    'city': ['', Validators.required],
-    'zip': ['', Validators.required],
-  }),
-});
+FormGroup getFormArray() {
+  return fb.group({
+    'personal': fb.group({
+      'name': ['', Validators.required],
+      'email': ['', Validators.required],
+    }),
+    'phone': fb.group({
+      'phoneNumber': ['', Validators.required],
+      'countryIso': ['', Validators.required],
+    }),
+    'address': fb.group({
+      'street': ['', Validators.required],
+      'city': ['', Validators.required],
+      'zip': ['', Validators.required],
+    }),
+  });
+}
 
 final familyMembersFormGroup = fb.group({
   'familyMembers': familyFormArray,
 });
 
 final familyFormArray = fb.array([
-  familyMemberForm,
-  familyMemberForm,
-  familyMemberForm,
+  getFormArray(),
+  getFormArray(),
+  getFormArray(),
 ]);
 
 const sb = SizedBox(height: 20);
@@ -86,9 +88,9 @@ class _ReactiveFormsExampleState extends State<ReactiveFormsExample> {
                         Padding(
                           padding: const EdgeInsets.only(bottom: 10.0),
                           child: ReactiveTextField(
-                            key: ObjectKey(e),
+                            key: UniqueKey(),
                             formControl: (e as FormGroup)
-                                .control('personal.name') as FormControl,
+                                .control('phone.phoneNumber') as FormControl,
                             keyboardType: TextInputType.number,
                             decoration: InputDecoration(
                               labelText: 'Phone number',
@@ -102,6 +104,45 @@ class _ReactiveFormsExampleState extends State<ReactiveFormsExample> {
                             ),
                           ),
                         ),
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 10.0),
+                          child: ReactiveTextField(
+                            key: UniqueKey(),
+                            formControl: (e as FormGroup)
+                                .control('personal.name') as FormControl,
+                            keyboardType: TextInputType.number,
+                            decoration: InputDecoration(
+                              labelText: 'Personal Name',
+                              suffixIcon: IconButton(
+                                icon: const Icon(
+                                  Icons.remove_circle,
+                                  color: Colors.red,
+                                ),
+                                onPressed: () => formArray.remove(e),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 10.0),
+                          child: ReactiveTextField(
+                            key: UniqueKey(),
+                            formControl: (e as FormGroup)
+                                .control('address.street') as FormControl,
+                            keyboardType: TextInputType.number,
+                            decoration: InputDecoration(
+                              labelText: 'Address Street',
+                              suffixIcon: IconButton(
+                                icon: const Icon(
+                                  Icons.remove_circle,
+                                  color: Colors.red,
+                                ),
+                                onPressed: () => formArray.remove(e),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Divider(),
                       ],
                     );
                   }).toList());
