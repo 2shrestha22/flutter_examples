@@ -1,6 +1,6 @@
 # localization
 
-A new Flutter project.
+Example Flutter app for internationalization using json from network.
 
 ## Getting Started
 
