@@ -2,3 +2,10 @@ name: flutter_examples
 
 packages:
   - examples/**
+
+scripts:
+  upgrade:
+    name: 'flutter pub upgrade'
+    exec: flutter pub upgrade
+  upgrade_major:
+    exec: flutter pub upgrade --major-versions
