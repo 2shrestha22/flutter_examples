@@ -6,14 +6,22 @@ void main() {
   runApp(const MainApp());
 }
 
-class MainApp extends StatelessWidget {
+class MainApp extends StatefulWidget {
   const MainApp({super.key});
+
+  @override
+  State<MainApp> createState() => _MainAppState();
+}
+
+class _MainAppState extends State<MainApp> {
+  bool lockEnabled = false;
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       builder: (context, child) {
         return AppLock(
+          enabled: lockEnabled,
           requestUnlock: () async {
             return LocalAuthentication().authenticate(
                 localizedReason: 'Please authenticate to unlock.');
@@ -21,9 +29,25 @@ class MainApp extends StatelessWidget {
           child: child!,
         );
       },
-      home: const Scaffold(
+      home: Scaffold(
         body: Center(
-          child: Text('Hello World!'),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const FlutterLogo(
+                size: 100,
+              ),
+              const SizedBox(height: 20),
+              Switch(
+                value: lockEnabled,
+                onChanged: (value) {
+                  setState(() {
+                    lockEnabled = value;
+                  });
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );
