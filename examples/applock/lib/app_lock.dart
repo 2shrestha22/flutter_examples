@@ -24,7 +24,7 @@ class AppLock extends StatefulWidget {
   State<AppLock> createState() => _AppLockState();
 }
 
-class _AppLockState extends State<AppLock> {
+class _AppLockState extends State<AppLock> with WidgetsBindingObserver {
   late bool locked;
 
   @override
@@ -32,6 +32,29 @@ class _AppLockState extends State<AppLock> {
     super.initState();
     // If app lock is enabled, initial state for locked should be true.
     locked = widget.enabled;
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  Future<void> didChangeAppLifecycleState(AppLifecycleState state) async {
+    super.didChangeAppLifecycleState(state);
+
+    if (widget.enabled && state == AppLifecycleState.paused) {
+      setState(() {
+        locked = true;
+      });
+    }
+    if (state == AppLifecycleState.resumed) {
+      if (locked) {
+        await verifyAndUnlock();
+      }
+    }
   }
 
   Future<void> verifyAndUnlock() async {
